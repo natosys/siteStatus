@@ -7,156 +7,138 @@
 		<script src="base.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
-				var siteStatusReports = getSiteStatusReports();
-				sessionStorage.siteStatusReports = JSON.stringify(siteStatusReports);
 				
-				// Build Site Status Summary Table
-				buildSiteStatusRow("site_names", "th", "_WSOCS[i].site", "_WSOCS[i].color", "site-names");
+				document.getElementById("presentationMode").addEventListener("click", function() {
+					toggleDisplay("submissionForm");
+				});
 				
-				var siteEls = document.getElementsByClassName("site-names");
-				for (var i = 0; i < siteEls.length; i++) {
-					var id = siteEls[i].id;
+				document.getElementById("submit").addEventListener("click", function() {
+					var siteStatusReports = getSiteStatusReports();
+					sessionStorage.siteStatusReports = JSON.stringify(siteStatusReports);
+				
+					// Build Site Status Summary Table
+					buildSiteStatusRow("site_names", "th", "_WSOCS[i].site", "_WSOCS[i].color", "site-names");
+				
+					var siteEls = document.getElementsByClassName("site-names");
+					for (var i = 0; i < siteEls.length; i++) {
+						var id = siteEls[i].id;
 					
-					var aTag = document.createElement('a');
-					aTag.setAttribute('href',"siteStatus.html?site="+siteEls[i].innerHTML);
-					aTag.innerHTML = siteEls[i].innerHTML;
-					document.getElementById(id).innerHTML = "";
-					document.getElementById(id).appendChild(aTag);
+						var aTag = document.createElement('a');
+						aTag.setAttribute('href',"siteStatus.html?site="+siteEls[i].innerHTML);
+						aTag.innerHTML = siteEls[i].innerHTML;
+						document.getElementById(id).innerHTML = "";
+						document.getElementById(id).appendChild(aTag);
 					
-				}
+					}
 				
-				buildSiteStatusRow("site_opscaps", "td", "\"OPSCAP\"", null, "");
-				buildSiteStatusRow("site_syscaps", "td", "\"SYSCAP\"", null, "");
-				buildRemoteSiteStatusRow("remote_sites", "td", "_WSOCS[i].remote_sites[j].site", null, "");
+					buildSiteStatusRow("site_opscaps", "td", "\"OPSCAP\"", null, "");
+					buildSiteStatusRow("site_syscaps", "td", "\"SYSCAP\"", null, "");
+					buildRemoteSiteStatusRow("remote_sites", "td", "_WSOCS[i].remote_sites[j].site", null, "");
 				
-				var _ANTENNA = [];
+					var _ANTENNA = [];
 				
-				var quicklookCount = 1;
-				for (var j = 0; j < siteStatusReports.length; j++) {
-					var obj = siteStatusReports[j];
+					var quicklookCount = 1;
+					for (var j = 0; j < siteStatusReports.length; j++) {
+						var obj = siteStatusReports[j];
 				
-					// Colorize Site Capabilities
-					colorizeCap("site_opscaps_"+obj.site, obj.site_opscap);
-					colorizeCap("site_syscaps_"+obj.site, obj.site_syscap);
+						// Colorize Site Capabilities
+						colorizeCap("site_opscaps_"+obj.site, obj.site_opscap);
+						colorizeCap("site_syscaps_"+obj.site, obj.site_syscap);
 				
-					// Get the unique sites in this report
-					var siteArr = uniqueElements(obj.equipment_configuration, "site");
+						// Get the unique sites in this report
+						var siteArr = uniqueElements(obj.equipment_configuration, "site");
 				
-					// Colorize each remote site capability field
-					for (var i = 0; i < siteArr.length; i++) {
-						if (siteArr[i] != obj.site) {
-							colorizeCap("remote_sites_"+siteArr[i], buildSyscap(obj.equipment_configuration, siteArr[i]));
+						// Colorize each remote site capability field
+						for (var i = 0; i < siteArr.length; i++) {
+							if (siteArr[i] != obj.site) {
+								colorizeCap("remote_sites_"+siteArr[i], buildSyscap(obj.equipment_configuration, siteArr[i]));
+							}
+						}
+				
+						// Populate table with Quicklooks
+						var table = document.getElementById("quicklooks").getElementsByTagName('tbody')[0];
+	
+						for (var i = 0; i < obj.quicklooks.length; i++) {
+							addRow("quicklooks", "quicklook");
+							document.getElementById("ql_site["+quicklookCount+"]").innerHTML = obj.site;
+							var keys = Object.keys(obj.quicklooks[i]);
+							for (var k = 0; k < keys.length; k++) {
+								document.getElementById(keys[k]+"["+quicklookCount+"]").innerHTML = obj.quicklooks[i][keys[k]];
+							}
+							quicklookCount++;
 						}
 					}
 				
-					// Populate table with Quicklooks
-					var table = document.getElementById("quicklooks").getElementsByTagName('tbody')[0];
-	
-					for (var i = 0; i < obj.quicklooks.length; i++) {
-						addRow("quicklooks", "quicklook");
-						document.getElementById("ql_site["+quicklookCount+"]").innerHTML = obj.site;
-						var keys = Object.keys(obj.quicklooks[i]);
-						for (var k = 0; k < keys.length; k++) {
-							document.getElementById(keys[k]+"["+quicklookCount+"]").innerHTML = obj.quicklooks[i][keys[k]];
-						}
-						quicklookCount++;
-					}
-				}
+					setCanvasWidth();
 				
-				setCanvasWidth();
-				
-				var canvas = document.getElementById('commandAlignment');
-				var ctx = canvas.getContext("2d");
+					var canvas = document.getElementById('commandAlignment');
+					var ctx = canvas.getContext("2d");
 					
-				ctx.fillStyle = "white";
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
+					ctx.fillStyle = "white";
+					ctx.fillRect(0, 0, canvas.width, canvas.height);
 				
-				// To put the spacecraft in the middle of the image, find the mid-point(mp)
-				// then get the width of all spacecraft elements and divide by two and subtract
-				// from the mp to get the spacecraft start point (sps)
-				var mp = canvas.width/2;
-				var w = _SPACECRAFT.length*55;
-				var sps = mp-w/2;
+					// To put the spacecraft in the middle of the image, find the mid-point(mp)
+					// then get the width of all spacecraft elements and divide by two and subtract
+					// from the mp to get the spacecraft start point (sps)
+					var mp = canvas.width/2;
+					var w = _SPACECRAFT.length*55;
+					var sps = mp-w/2;
 	
-				for (var i = 0; i < _SPACECRAFT.length; i++) {
+					for (var i = 0; i < _SPACECRAFT.length; i++) {
 		
-					var x = i*55+sps;
-					var y = canvas.height-200;
-					var w = 50;
-					var h = 25;
-					
-					_SPACECRAFT[i].x = x+w/2;
-					_SPACECRAFT[i].yb = y+h;
-					_SPACECRAFT[i].yt = y;
-					
-					// Spacecraft drawing
-					ctx.beginPath();
-					ctx.strokeStyle="black";
-					ctx.rect(x,y,w,h);
-					ctx.stroke();
-					ctx.beginPath();
-					ctx.font = "20px Courier";
-					ctx.fillStyle = 'blue';
-					ctx.fillText(_SPACECRAFT[i].iron,x+1,y+20);
-				}
-				
-				var antCount = 0;
-				for (var i = 0; i < siteStatusReports.length; i++) {
-					var obj = siteStatusReports[i];
-					// Filter to WSOC GSCCE Strings
-					var gscceStrings = obj.equipment_configuration.filter(function (el) {
-					  return el.site == obj.site &&
-							 el.subsystem == "GSCCE";
-					});
-					antCount += gscceStrings.length;
-				}
-				
-				var mp = canvas.width/2;
-				var w = antCount*52;
-				var ws = mp-w/2;
-				var ai = 0;
-				
-				for (var i = 0; i < siteStatusReports.length; i++) {
-					var obj = siteStatusReports[i];
-					var gscceStrings = obj.equipment_configuration.filter(function (el) {
-					  return el.site == obj.site &&
-							 el.subsystem == "GSCCE";
-					});
-					var wsoc = _WSOCS.filter(function (el) {
-						return el.site == obj.site;
-					})
-					wsoc = wsoc[0];
-					
-					var x = ai*52+ws;
-					var y = canvas.height-40;
-					var w = 52*gscceStrings.length-2;
-					var h = 25;
-					
-					// WSOC drawing
-					ctx.beginPath();
-					ctx.strokeStyle = wsoc.color;
-					ctx.rect(x,y,w,h);
-					ctx.stroke();
-					ctx.beginPath();
-					ctx.font = "20px Courier";
-					ctx.fillStyle = "black";
-					ctx.fillText(_WSOCS[i].site,x+1,y+20);
-					
-					// WSOC Antenna drawing
-					for (var j = 0; j < gscceStrings.length; j++) {
-						var x = (ai+j)*52+ws;
-						var y = canvas.height-70;
+						var x = i*55+sps;
+						var y = canvas.height-200;
 						var w = 50;
 						var h = 25;
-						
-						var antObj = {};
-						antObj.antenna = gscceStrings[j].antenna.slice(0,-2);
-						antObj.x = x+w/2;
-						antObj.y = y;
-						antObj.type = "WSOC";
-						
-						_ANTENNA.push(antObj);
-						
+					
+						_SPACECRAFT[i].x = x+w/2;
+						_SPACECRAFT[i].yb = y+h;
+						_SPACECRAFT[i].yt = y;
+					
+						// Spacecraft drawing
+						ctx.beginPath();
+						ctx.strokeStyle="black";
+						ctx.rect(x,y,w,h);
+						ctx.stroke();
+						ctx.beginPath();
+						ctx.font = "20px Courier";
+						ctx.fillStyle = 'blue';
+						ctx.fillText(_SPACECRAFT[i].iron,x+1,y+20);
+					}
+				
+					var antCount = 0;
+					for (var i = 0; i < siteStatusReports.length; i++) {
+						var obj = siteStatusReports[i];
+						// Filter to WSOC GSCCE Strings
+						var gscceStrings = obj.equipment_configuration.filter(function (el) {
+						  return el.site == obj.site &&
+								 el.subsystem == "GSCCE";
+						});
+						antCount += gscceStrings.length;
+					}
+				
+					var mp = canvas.width/2;
+					var w = antCount*52;
+					var ws = mp-w/2;
+					var ai = 0;
+				
+					for (var i = 0; i < siteStatusReports.length; i++) {
+						var obj = siteStatusReports[i];
+						var gscceStrings = obj.equipment_configuration.filter(function (el) {
+						  return el.site == obj.site &&
+								 el.subsystem == "GSCCE";
+						});
+						var wsoc = _WSOCS.filter(function (el) {
+							return el.site == obj.site;
+						})
+						wsoc = wsoc[0];
+					
+						var x = ai*52+ws;
+						var y = canvas.height-40;
+						var w = 52*gscceStrings.length-2;
+						var h = 25;
+					
+						// WSOC drawing
 						ctx.beginPath();
 						ctx.strokeStyle = wsoc.color;
 						ctx.rect(x,y,w,h);
@@ -164,86 +146,86 @@
 						ctx.beginPath();
 						ctx.font = "20px Courier";
 						ctx.fillStyle = "black";
-						ctx.fillText(antObj.antenna,x+1,y+20);
-					}
-					ai += gscceStrings.length;
-				}
-				
-				// Build object containing RMCE sites and their antennas
-				var rmceSites = [];
-				var rmceAntCount = 0;
-				for (var i = 0; i < siteStatusReports.length; i++) {
-					var obj = siteStatusReports[i].equipment_configuration;
-					var arr = obj.filter(function (el) {
-						return el.subsystem == "GSCCE" &&
-							   el.site != siteStatusReports[i].site;
-					});
-					var wsoc = _WSOCS.filter(function (el) {
-						return el.site == siteStatusReports[i].site;
-					});
-					wsoc = wsoc[0];
+						ctx.fillText(_WSOCS[i].site,x+1,y+20);
 					
-					arr = uniqueElements(arr, 'site');
-					for (var j = 0; j < arr.length; j++) {
-						var subObj = {};
-						subObj.site = arr[j];
-						subObj.color = wsoc.color;
-						subObj.antenna = [];
+						// WSOC Antenna drawing
+						for (var j = 0; j < gscceStrings.length; j++) {
+							var x = (ai+j)*52+ws;
+							var y = canvas.height-70;
+							var w = 50;
+							var h = 25;
 						
-						var antennas = obj.filter(function (el) {
+							var antObj = {};
+							antObj.antenna = gscceStrings[j].antenna.slice(0,-2);
+							antObj.x = x+w/2;
+							antObj.y = y;
+							antObj.type = "WSOC";
+						
+							_ANTENNA.push(antObj);
+						
+							ctx.beginPath();
+							ctx.strokeStyle = wsoc.color;
+							ctx.rect(x,y,w,h);
+							ctx.stroke();
+							ctx.beginPath();
+							ctx.font = "20px Courier";
+							ctx.fillStyle = "black";
+							ctx.fillText(antObj.antenna,x+1,y+20);
+						}
+						ai += gscceStrings.length;
+					}
+				
+					// Build object containing RMCE sites and their antennas
+					var rmceSites = [];
+					var rmceAntCount = 0;
+					for (var i = 0; i < siteStatusReports.length; i++) {
+						var obj = siteStatusReports[i].equipment_configuration;
+						var arr = obj.filter(function (el) {
 							return el.subsystem == "GSCCE" &&
 								   el.site != siteStatusReports[i].site;
 						});
+						var wsoc = _WSOCS.filter(function (el) {
+							return el.site == siteStatusReports[i].site;
+						});
+						wsoc = wsoc[0];
+					
+						arr = uniqueElements(arr, 'site');
+						for (var j = 0; j < arr.length; j++) {
+							var subObj = {};
+							subObj.site = arr[j];
+							subObj.color = wsoc.color;
+							subObj.antenna = [];
 						
-						for (var k = 0; k < antennas.length; k++) {
-							if (antennas[k].site == subObj.site) {
-								subObj.antenna.push(antennas[k].antenna.slice(0,-2));
-								rmceAntCount++;
+							var antennas = obj.filter(function (el) {
+								return el.subsystem == "GSCCE" &&
+									   el.site != siteStatusReports[i].site;
+							});
+						
+							for (var k = 0; k < antennas.length; k++) {
+								if (antennas[k].site == subObj.site) {
+									subObj.antenna.push(antennas[k].antenna.slice(0,-2));
+									rmceAntCount++;
+								}
 							}
+						
+							rmceSites.push(subObj);
 						}
-						
-						rmceSites.push(subObj);
 					}
-				}
 				
-				var mp = canvas.width/2;
-				var r = rmceAntCount*52;
-				var rs = mp-r/2;
-				var ri = 0;
+					var mp = canvas.width/2;
+					var r = rmceAntCount*52;
+					var rs = mp-r/2;
+					var ri = 0;
 				
-				for (var i = 0; i < rmceSites.length; i++) {
-					var obj = rmceSites[i];
+					for (var i = 0; i < rmceSites.length; i++) {
+						var obj = rmceSites[i];
 					
-					var x = ri*52+rs;
-					var y = 20;
-					var w = 52*obj.antenna.length-2;
-					var h = 25;
-					
-					// RMCE Node drawing
-					ctx.beginPath();
-					ctx.strokeStyle = obj.color;
-					ctx.rect(x,y,w,h);
-					ctx.stroke();
-					ctx.beginPath();
-					ctx.font = "20px Courier";
-					ctx.fillStyle = "black";
-					ctx.fillText(obj.site,x+1,y+20);
-				
-					// RMCE Antenna drawing
-					for (var j = 0; j < obj.antenna.length; j++) {
-						var x = (ri+j)*52+rs;
-						var y = 50;
-						var w = 50;
+						var x = ri*52+rs;
+						var y = 20;
+						var w = 52*obj.antenna.length-2;
 						var h = 25;
-						
-						var antObj = {};
-						antObj.antenna = obj.antenna[j];
-						antObj.x = x+w/2;
-						antObj.y = y+h;
-						antObj.type = 'RMCE';
-						
-						_ANTENNA.push(antObj);
-						
+					
+						// RMCE Node drawing
 						ctx.beginPath();
 						ctx.strokeStyle = obj.color;
 						ctx.rect(x,y,w,h);
@@ -251,70 +233,111 @@
 						ctx.beginPath();
 						ctx.font = "20px Courier";
 						ctx.fillStyle = "black";
-						ctx.fillText(antObj.antenna,x+1,y+20);
-					}
-					
-					ri += obj.antenna.length;
-				}
+						ctx.fillText(obj.site,x+1,y+20);
 				
-				// Add Control lines
-				for (var i = 0; i < siteStatusReports.length; i++) {
-					var obj = siteStatusReports[i].equipment_configuration;
-					var obj = obj.filter(function (el) {
-						return el.subsystem == "GSCCE";
-					})
-					
-					for (var k = 0; k < obj.length; k++) {
-						var subObj = obj[k];
+						// RMCE Antenna drawing
+						for (var j = 0; j < obj.antenna.length; j++) {
+							var x = (ri+j)*52+rs;
+							var y = 50;
+							var w = 50;
+							var h = 25;
 						
-						var wsoc = _WSOCS.filter(function (el) {
-							return el.site == (subObj.control_wsoc);
-						});
-						wsoc = wsoc[0];
-						var antenna = _ANTENNA.filter(function (el) {
-							return el.antenna == (subObj.antenna.slice(0,-2));
-						});
-						antenna = antenna[0];
-						var spacecraft = _SPACECRAFT.filter(function (el) {
-							return el.iron == (subObj.iron);
-						});
-						spacecraft = spacecraft[0];
+							var antObj = {};
+							antObj.antenna = obj.antenna[j];
+							antObj.x = x+w/2;
+							antObj.y = y+h;
+							antObj.type = 'RMCE';
 						
-						if (typeof wsoc !== 'undefined' && typeof antenna !== 'undefined' && spacecraft !== 'undefined') {
-							
+							_ANTENNA.push(antObj);
+						
 							ctx.beginPath();
-							ctx.strokeStyle = wsoc.color;
-							
-							if (subObj.allocation == 1) {
-								ctx.setLineDash([5, 5]);
-							}
-							else {
-								ctx.setLineDash([0, 0]);
-							}
-							
-							ctx.moveTo(antenna.x,antenna.y);
-							if (antenna.type == "WSOC") {
-								ctx.lineTo(spacecraft.x,spacecraft.yb);
-							}
-							else {
-								ctx.lineTo(spacecraft.x,spacecraft.yt);
-							}
+							ctx.strokeStyle = obj.color;
+							ctx.rect(x,y,w,h);
 							ctx.stroke();
+							ctx.beginPath();
+							ctx.font = "20px Courier";
+							ctx.fillStyle = "black";
+							ctx.fillText(antObj.antenna,x+1,y+20);
+						}
+					
+						ri += obj.antenna.length;
+					}
+				
+					// Add Control lines
+					for (var i = 0; i < siteStatusReports.length; i++) {
+						var obj = siteStatusReports[i].equipment_configuration;
+						var obj = obj.filter(function (el) {
+							return el.subsystem == "GSCCE";
+						})
+					
+						for (var k = 0; k < obj.length; k++) {
+							var subObj = obj[k];
+						
+							var wsoc = _WSOCS.filter(function (el) {
+								return el.site == (subObj.control_wsoc);
+							});
+							wsoc = wsoc[0];
+							var antenna = _ANTENNA.filter(function (el) {
+								return el.antenna == (subObj.antenna.slice(0,-2));
+							});
+							antenna = antenna[0];
+							var spacecraft = _SPACECRAFT.filter(function (el) {
+								return el.iron == (subObj.iron);
+							});
+							spacecraft = spacecraft[0];
+						
+							if (typeof wsoc !== 'undefined' && typeof antenna !== 'undefined' && spacecraft !== 'undefined') {
+							
+								ctx.beginPath();
+								ctx.strokeStyle = wsoc.color;
+							
+								if (subObj.allocation == 1) {
+									ctx.setLineDash([5, 5]);
+								}
+								else {
+									ctx.setLineDash([0, 0]);
+								}
+							
+								ctx.moveTo(antenna.x,antenna.y);
+								if (antenna.type == "WSOC") {
+									ctx.lineTo(spacecraft.x,spacecraft.yb);
+								}
+								else {
+									ctx.lineTo(spacecraft.x,spacecraft.yt);
+								}
+								ctx.stroke();
+							}
 						}
 					}
-				}
 				
-				// add correct as at DTG to canvas
-				var dtg = new Date().toString();
-				ctx.beginPath();
-				ctx.font = "8px Courier";
-				ctx.fillText("correct as at: "+dtg,10,10);
+					// add correct as at DTG to canvas
+					var dtg = new Date().toString();
+					ctx.beginPath();
+					ctx.font = "8px Courier";
+					ctx.fillText("correct as at: "+dtg,10,10);
+				});
+				
+				document.getElementById("reset").addEventListener("click", function(){
+					var e = document.getElementsByClassName("status");
+					// Reset all Site Statuses
+					for (var i = 0; i < e.length; i++) {
+						document.getElementById(e[i].id).setAttribute("class", "status cap-green")
+					}
+					// Clear out the Quicklooks list
+					clearTable(document.getElementById("quicklooks"));
+				});
 				
 				// Setup link to download canvas as an image.
 				document.getElementById("download-canvas").addEventListener('click', function(ev) {				
 					var date = new Date;
-				    document.getElementById("download-canvas").href = canvas.toDataURL();
-				    document.getElementById("download-canvas").download = date.getTime()+"-SSR.png";
+					
+		            if (canvas.msToBlob) { //for IE
+		                 var blob = canvas.msToBlob();
+		                 window.navigator.msSaveBlob(blob, date.getTime()+"-SSR.png");
+		             } else { //other browsers
+		                 document.getElementById("download-canvas").href = canvas.toDataURL();
+		                 document.getElementById("download-canvas").download = date.getTime()+"-SSR.png";
+		             }
 				});
 			});
 		</script>
@@ -365,6 +388,8 @@
 					</tr>
 				</tbody>
 			</table>
+			<br />
+			<a href="#" id="presentationMode">Mode</a> | <a href="#" id="submit">Submit</a> | <a href="" id="reset">Reset</a>
 		</div>
 		<br /><br />
 		<div class="content" id="submissionForm">

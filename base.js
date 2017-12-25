@@ -110,7 +110,6 @@ function buildSiteObjectFromMessage(string) {
  */
 function buildSyscap(obj, site) {
 	var syscap = 0;
-	console.log(obj);
 	for (var i = 0; i < obj.length; i++) {
 		if (obj[i].site == site && obj[i].syscap > syscap) {
 			syscap = obj[i].syscap;
@@ -307,7 +306,6 @@ function parseURLParam(url) {
 function colorize(element, value) {
 	console.log("colorize " + element.id);
 	var elClass = element.className;
-	console.log(elClass);
 	if (element.id.indexOf("alloc") >= 0) {
 		if (value == 0) {
 			document.getElementById(element.id).setAttribute("class", "status pace-pri");
@@ -424,4 +422,29 @@ function buildSiteObjectFromBuilder() {
 	}
 	
 	return obj;
+}
+
+/* toggleDisplay
+ * Hides input fields
+ */
+function toggleDisplay(element) {
+	var display = document.getElementById(element).style.display;
+	if (display == "") {
+		document.getElementById(element).style.display="none";
+	}
+	else {
+		document.getElementById(element).style.display="";
+	}
+}
+
+/* clearTable
+ * Clears table rows delivered to function
+ */
+function clearTable(table) {
+	console.log("clearTable");
+	var rows = table.rows;
+	var i = rows.length;
+	while (--i) {
+		rows[i].parentNode.removeChild(rows[i]);
+	}
 }
