@@ -1,0 +1,14 @@
+[
+	{
+		"subsystem":"GSCCE"
+	},
+	{
+		"subsystem":"RSCCE"
+	},
+	{
+		"subsystem":"WRMS"
+	},
+	{
+		"subsystem":"RFMOW"
+	}
+]

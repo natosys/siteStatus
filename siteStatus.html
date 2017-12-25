@@ -1,0 +1,137 @@
+<html>
+	<head>
+		<title>Site Status</title>
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+		<link rel="stylesheet" href="base.css">
+		<script src="polyfill.js"></script>
+		<script src="base.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var site = parseURLParam(window.location.href);
+				
+				var siteStatusReports = JSON.parse(sessionStorage.siteStatusReports);
+				
+				var obj = siteStatusReports.filter(function(obj) {
+					return obj.site == site;
+				});
+				obj = obj[0];
+				
+				console.log(obj);
+				
+				document.getElementById("title").innerHTML = "Site Status Summary: " + obj.site.toUpperCase();
+				
+				var created_at = new Date(parseInt(obj.dtg));
+				document.getElementById("correct_as_at").innerHTML = "<b>Correct as at:</b> " + created_at.toString();
+				
+				colorize(document.getElementById("opscap"), obj.site_opscap);
+				colorize(document.getElementById("syscap"), obj.site_syscap);
+				colorize(document.getElementById("fpcon"), obj.fpcon);
+				colorize(document.getElementById("infocon"), obj.infocon);
+				colorize(document.getElementById("hazcon"), obj.hazcon);
+				
+				populateSiteStatusDetails(obj.equipment_configuration, "equipment_configuration", "string", "details");
+				populateSiteStatusDetails(obj.quicklooks, "quicklooks", "quicklook", "details");
+				
+				document.getElementById("remarks").innerHTML = obj.remarks;
+				document.getElementById("chops").innerHTML = obj.chops;
+				// Generate the URL
+				document.getElementById("edit").setAttribute('href', "siteStatusBuilder.html?site="+obj.site);
+			});
+		</script>
+	</head>
+	<body>
+		<div class="navbar">
+			<div class="title" id="title">Site Status Summary</div>
+			<div class="byline">| <a href="index.html">home</a> | <a href="siteStatusBuilder.html">builder</a> |</div>
+		</div>
+		<br />
+		<div class="content">
+			<div id="correct_as_at"></div>
+			<br />
+			<table id="site_capabilities">
+				<tr>
+					<th>OPSCAP</th>
+					<th>SYSCAP</th>
+				</tr>
+				<tr>
+					<td><div id="opscap">OPSCAP</div></td>
+					<td><div id="syscap">SYSCAP</div></td>
+				</tr>
+			</table>
+			
+			<br />
+			
+			<table id="controls">
+				<tr>
+					<th>FPCON</th>
+					<th>INFOCON</th>
+					<th>HAZCON</th>
+				<tr>
+				<tr>
+					<td><div id="fpcon">FPCON</div></td>
+					<td><div id="infocon">INFOCON</div></td>
+					<td><div id="hazcon">HAZCON</div></td>
+				</tr>
+			</table>
+			<br />
+			<table id="equipment_configuration">
+				<tr hidden></tr>
+				<tr>
+					<th>Site</th>
+					<th>Control WSOC</th>
+					<th>Subsystem</th>
+					<th>String Name</th>
+					<th>Antenna</th>
+					<th>Iron</th>
+					<th>Allocation</th>
+					<th>SYSCAP</th>
+				</tr>
+				<tr id="string[0]">
+					<td><div id="site[0]"></div></td>
+					<td><div id="control_wsoc[0]"></div></td>
+					<td><div id="subsystem[0]"></div></td>
+					<td><div id="string_name[0]"></div></td>
+					<td><div id="antenna[0]"></td>
+					<td><div id="iron[0]"></div></td>
+					<td><div id="allocation[0]"></div></td>
+					<td><div id="syscap[0]"></td>
+				</tr>
+			</table>
+			<br />
+			<table id="quicklooks">
+				<tbody>
+					<tr hidden>
+					</tr>
+					<tr>
+						<th>ID</th>
+						<th class="wide">Title</th>
+						<th>Status</th>
+					</tr>
+					<tr id="quicklook[0]" style="visibility: invisible;">
+						<td><div id="ql_id[0]"></div></td>
+						<td class="wide"><div id="ql_title[0]"></div></td>
+						<td><div id="ql_status[0]"></div></td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<table>
+				<tr>
+					<td>
+						<div id="remarks" align="left"></div>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<table>
+				<tr>
+					<td>
+						<div id="chops" align="left"></div>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<a href="#" id="edit">Edit</a>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,310 @@
+<html>
+	<head>
+		<title>Site Status</title>
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+		<link rel="stylesheet" href="base.css">
+		<script src="polyfill.js"></script>
+		<script src="base.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var site = parseURLParam(window.location.href);
+				
+				var siteStatusReports = JSON.parse(sessionStorage.siteStatusReports);
+				
+				var obj = siteStatusReports.filter(function(obj) {
+					return obj.site == site;
+				});
+				obj = obj[0];
+				
+				// Build list for site options
+				var siteList = [];
+				for (var i = 0; i < _WSOCS.length; i++) {
+					siteList.push(_WSOCS[i].site);
+					var wsoc = _WSOCS[i];
+					for (var j = 0; j < wsoc.remote_sites.length; j++) {
+						var remote_site = wsoc.remote_sites[j].site;
+						siteList.push(remote_site);
+					}
+				}
+				
+				// Add sites to site select field
+				addOptions(siteList, "site[0]");
+				
+				// Build list for subsystem options and add to select field
+				var subsystemList = uniqueElements(_SUBSYSTEMS, "subsystem");
+				addOptions(subsystemList, "subsystem[0]");
+				
+				// Build list for control WSOC options and add to select field
+				var wsocList = uniqueElements(_WSOCS, "site");
+				addOptions(wsocList, "control_wsoc[0]");
+				
+				// Build list for control spacecraft options and add to select field
+				var spacecraftList = uniqueElements(_SPACECRAFT, "iron");
+				addOptions(spacecraftList, "iron[0]");
+				
+				var keys = Object.keys(obj);
+				for (var i = 0; i < keys.length; i++) {
+					if (!Array.isArray(obj[keys[i]])) {
+						document.getElementById(keys[i]).value = obj[keys[i]];
+					}
+					else {
+						var row = "string";
+						if (keys[i] == "quicklooks") {
+							row = "quicklook";
+						}
+						populateSiteStatusDetails(obj[keys[i]], keys[i], row, "editor");
+					}
+				}
+				
+				setTime();
+				setInterval(setTime, 15000);
+				
+				var fields = document.getElementsByClassName("field");
+				for (var j = fields.length-1; j >= 0; j--) {
+					colorize(fields[j], fields[j].value);
+				}
+				
+				document.getElementById("site_status_builder").addEventListener("change", function(event) {
+					obj = buildSiteObjectFromBuilder();
+					colorize(event.target, event.target.value);
+					if (event.target.id.indexOf("syscap") >= 0) {
+						var siteSyscap = buildSyscap(obj.equipment_configuration, obj.site);
+						document.getElementById("site_syscap").value = siteSyscap;
+						colorize(document.getElementById("site_syscap"), document.getElementById("site_syscap").value);
+					}
+				});
+				
+				document.getElementById("generate").addEventListener("click", function(){
+					obj = buildSiteObjectFromBuilder();
+					var string = writeSiteStatus(obj);
+					document.getElementById("complete-report").value = string;
+				});
+				
+				document.getElementById("add-equipment-configuration").addEventListener("click", function(){
+				    addRow("equipment_configuration", 'string');
+				});
+			
+				document.getElementById("remove-equipment-configuration").addEventListener("click", function(){
+				    removeRow("equipment_configuration", 'string');
+				});	
+							
+				document.getElementById("add-quicklook").addEventListener("click", function(){
+				    addRow("quicklooks", 'quicklook');
+				});
+			
+				document.getElementById("remove-quicklook").addEventListener("click", function(){
+				    removeRow("quicklooks", 'quicklook');
+				});
+			});
+			
+			function addOptions(list, select) {
+				for (var i = 0; i < list.length; i++) {
+					var option = document.createElement("option");
+					option.text = list[i];
+					document.getElementById(select).add(option, i);
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div class="navbar">
+			<div class="title" id="title">Site Status Builder</div>
+			<div class="byline">| <a href="index.html">home</a> | <a href="siteStatusBuilder.html">builder</a> |</div>
+		</div>
+		<br />
+		<div class="content">
+			<form action="javascript:void(0);" id="site_status_builder">
+				<table>
+					<tr>
+						<td>
+							<label for="site">Site</label>
+						</td>
+						<td>
+							<select name="site" id="site">
+								<option value="DOC">DOC - A/53rd</option>
+								<option value="MOC">MOC - B/53rd</option>
+								<option value="LOC">LOC - C/53rd</option>
+								<option value="WOC">WOC - D/53rd</option>
+								<option value="BOC">BOC - E/53rd</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="dtg">DTG</label>
+						</td>
+						<td>
+							<input type="text" name="dtg" id="dtg" disabled />
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table id="site_capabilities">
+					<tr>
+						<th>OPSCAP</th>
+						<th>SYSCAP</th>
+					</tr>
+					<tr>
+						<td>
+							<select name="site_opscap" id="site_opscap" class="field">
+								<option value="0">GREEN</option>
+								<option value="1">AMBER</option>
+								<option value="2">RED</option>
+								<option value="3">WHITE</option>
+							</select>
+						</td>
+						<td>
+							<select name="site_syscap" id="site_syscap" class="field" disabled>
+								<option value="0">GREEN</option>
+								<option value="1">AMBER</option>
+								<option value="2">RED</option>
+								<option value="3">WHITE</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			
+				<br />
+			
+				<table id="controls">
+					<tr>
+						<th>FPCON</th>
+						<th>INFOCON</th>
+						<th>HAZCON</th>
+					<tr>
+						<td>
+							<select name="fpcon" id="fpcon" class="field">
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</td>
+						<td>
+							<select name="infocon" id="infocon" class="field">
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</td>
+						<td>
+							<select name="hazcon" id="hazcon" class="field">
+								<option value="0">0</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table id="equipment_configuration">
+					<tr>
+						<td colspan="8">
+							<a href="javascript:void(0);" id='add-equipment-configuration'>+</a> | 
+							<a href="javascript:void(0);" id='remove-equipment-configuration'>-</a>
+						</td>
+					<tr>
+						<th>Site</th>
+						<th>Control WSOC</th>
+						<th>Subsystem</th>
+						<th>String Name</th>
+						<th>Antenna</th>
+						<th>Iron</th>
+						<th>Allocation</th>
+						<th>SYSCAP</th>
+					</tr>
+					<tr id="string[0]" class="string" style="visibility: visible;">
+						<td>
+							<select name="site[0]" id="site[0]" class="field site">
+							</select>
+						</td>
+						<td>
+							<select name="control_wsoc[0]" id="control_wsoc[0]" class="field control_wsoc">
+							</select>
+						</td>
+						<td>
+							<select name="subsystem[0]" id="subsystem[0]" class="field subsystem">
+							</select>
+						</td>
+						<td>
+							<input type="text" name="string_name[0]" id="string_name[0]" />
+						</td>
+						<td>
+							<input type="text" name="antenna[0]" id="antenna[0]" />
+						</td>
+						<td>
+							<select name="iron[0]" id="iron[0]" class="field iron">
+							</select>
+						</td>
+						<td>
+							<select name="allocation[0]" id="allocation[0]" class="field">
+								<option value="0">PRIMARY</option>
+								<option value="1">ALTERNATE</option>
+							</select>
+						</td>
+						<td>
+							<select name="syscap[0]" id="syscap[0]" class="field">
+								<option value="0">GREEN</option>
+								<option value="1">AMBER</option>
+								<option value="2">RED</option>
+								<option value="3">WHITE</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table id="quicklooks">
+					<tbody>
+						<tr>
+							<td colspan="3">
+								<a href="javascript:void(0);" id='add-quicklook'>+</a> | 
+								<a href="javascript:void(0);" id='remove-quicklook'>-</a>
+							</td>
+						</tr>
+						<tr>
+							<th>ID</th>
+							<th class="wide">Title</th>
+							<th>Status</th>
+						</tr>
+						<tr id="quicklook[0]" class="quicklook" style="visibility: invisible;">
+							<td>
+								<input type="text" name="ql_id[0]" id="ql_id[0]" />
+							</td>
+							<td class="wide">
+								<input type="text" name="ql_title[0]" id="ql_title[0]" />
+							</td>
+							<td>
+								<input type="text" name="ql_status[0]" id="ql_status[0]" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<br />
+				<table>
+					<tr>
+						<td>
+							<input type="text" name="remarks" id="remarks" />
+						</td>
+					</tr>
+				</table>
+				<br />
+				<table>
+					<tr>
+						<td>
+							<input type="text" name="chops" id="chops" />
+						</td>
+					</tr>
+				</table>
+				<br />
+				<a href="#" id="generate">Generate</a>
+			</form>
+		</div>
+		<br />
+		<div class="content">
+			<textarea id="complete-report" rows="25" class="wide">
+			</textarea>
+		</div>
+	</body>
+</html>
