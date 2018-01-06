@@ -237,7 +237,7 @@ function addRow(table, rowId) {
 
 	// Append the cloned element
 	document.getElementById(table).tBodies[0].appendChild(clone);
-	
+	return clone;
 }
 
 /* removeRow

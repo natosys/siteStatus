@@ -13,6 +13,8 @@
 				});
 				
 				document.getElementById("submit").addEventListener("click", function() {
+					resetHomepage();
+					
 					var siteStatusReports = getSiteStatusReports();
 					sessionStorage.siteStatusReports = JSON.stringify(siteStatusReports);
 				
@@ -318,13 +320,7 @@
 				});
 				
 				document.getElementById("reset").addEventListener("click", function(){
-					var e = document.getElementsByClassName("status");
-					// Reset all Site Statuses
-					for (var i = 0; i < e.length; i++) {
-						document.getElementById(e[i].id).setAttribute("class", "status cap-green")
-					}
-					// Clear out the Quicklooks list
-					clearTable(document.getElementById("quicklooks"));
+					resetHomepage();
 				});
 				
 				// Setup link to download canvas as an image.
@@ -340,6 +336,17 @@
 		             }
 				});
 			});
+			
+			function resetHomepage (){
+				var e = document.getElementsByClassName("status");
+				// Reset all Site Statuses
+				for (var i = 0; i < e.length; i++) {
+					document.getElementById(e[i].id).setAttribute("class", "status cap-green")
+				}
+				// Clear out the Quicklooks list
+				clearTable(document.getElementById("quicklooks"));
+			}
+			
 		</script>
 	</head>
 	<body>
@@ -453,7 +460,7 @@ Site:MOC, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NCT-4, Antenna:FOCX4, I
 Site:AOM, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOM, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOM, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:MOMX1, Iron:1006, Allocation:1, SYSCAP:0
+Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:MOMX1, Iron:1006, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:WRMS, String_Name:BOC2WM, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:WRMS, String_Name:BOC3WM, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:WRMS, String_Name:BOC1WM, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0

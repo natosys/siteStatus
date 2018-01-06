@@ -81,7 +81,42 @@
 				});
 				
 				document.getElementById("add-equipment-configuration").addEventListener("click", function(){
-				    addRow("equipment_configuration", 'string');
+					var el = addRow("equipment_configuration", 'string');
+					var children = el.childNodes;
+					for (var i = 0; i < children.length; i++) {
+						if (children[i].nodeType != 3) {
+							var child = children[i].childNodes[1];
+							if (child.classList.contains("status")) {
+								colorize(child, child.value);
+							}
+							if (child.classList.contains("delete")) {
+								child.addEventListener('click', function() {
+									var thisRow = this.parentNode.parentNode;
+
+									thisRow.outerHTML = "";
+									delete element;
+						
+									var strings = document.getElementsByClassName("string");
+									for (var i = 0 ; i < strings.length; i++) {
+							
+									    if (strings[i].nodeType != 3) {
+											for (var j = 0; j < strings[i].childNodes.length; j++) {
+												if (strings[i].childNodes[j].nodeType != 3) {
+													var node = strings[i].childNodes[j];
+													var children = node.childNodes;
+													var childId = children[1].id.split(/\[([^[\]]*)\]/);
+													children[1].id = childId[0]+"["+i+"]"+childId[2];
+												}
+											}
+										}
+										var nodeId = strings[i].id.split(/\[([^[\]]*)\]/);
+										strings[i].id = nodeId[0]+"["+i+"]";
+									}
+								});
+							}
+						}
+					}
+					
 				});
 			
 				document.getElementById("remove-equipment-configuration").addEventListener("click", function(){
@@ -95,6 +130,34 @@
 				document.getElementById("remove-quicklook").addEventListener("click", function(){
 				    removeRow("quicklooks", 'quicklook');
 				});
+				
+				// Add delete buttons for each row
+				var deleteButtons = document.getElementsByClassName("delete");
+				for (var i = 0; i < deleteButtons.length; i++) {
+					deleteButtons[i].addEventListener('click', function() {
+						var thisRow = this.parentNode.parentNode;
+
+						thisRow.outerHTML = "";
+						delete element;
+						
+						var strings = document.getElementsByClassName("string");
+						for (var i = 0 ; i < strings.length; i++) {
+							
+						    if (strings[i].nodeType != 3) {
+								for (var j = 0; j < strings[i].childNodes.length; j++) {
+									if (strings[i].childNodes[j].nodeType != 3) {
+										var node = strings[i].childNodes[j];
+										var children = node.childNodes;
+										var childId = children[1].id.split(/\[([^[\]]*)\]/);
+										children[1].id = childId[0]+"["+i+"]"+childId[2];
+									}
+								}
+							}
+							var nodeId = strings[i].id.split(/\[([^[\]]*)\]/);
+							strings[i].id = nodeId[0]+"["+i+"]";
+						}
+					});
+				}
 			});
 			
 			function addOptions(list, select) {
@@ -120,7 +183,7 @@
 							<label for="site">Site</label>
 						</td>
 						<td>
-							<select name="site" id="site">
+							<select id="site">
 								<option value="DOC">DOC - A/53rd</option>
 								<option value="MOC">MOC - B/53rd</option>
 								<option value="LOC">LOC - C/53rd</option>
@@ -134,7 +197,7 @@
 							<label for="dtg">DTG</label>
 						</td>
 						<td>
-							<input type="text" name="dtg" id="dtg" disabled />
+							<input type="text" id="dtg" disabled />
 						</td>
 					</tr>
 				</table>
@@ -146,7 +209,7 @@
 					</tr>
 					<tr>
 						<td>
-							<select name="site_opscap" id="site_opscap" class="field">
+							<select id="site_opscap" class="field">
 								<option value="0">GREEN</option>
 								<option value="1">AMBER</option>
 								<option value="2">RED</option>
@@ -154,7 +217,7 @@
 							</select>
 						</td>
 						<td>
-							<select name="site_syscap" id="site_syscap" class="field" disabled>
+							<select id="site_syscap" class="field" disabled>
 								<option value="0">GREEN</option>
 								<option value="1">AMBER</option>
 								<option value="2">RED</option>
@@ -173,7 +236,7 @@
 						<th>HAZCON</th>
 					<tr>
 						<td>
-							<select name="fpcon" id="fpcon" class="field">
+							<select id="fpcon" class="field">
 								<option value="0">0</option>
 								<option value="1">1</option>
 								<option value="2">2</option>
@@ -181,7 +244,7 @@
 							</select>
 						</td>
 						<td>
-							<select name="infocon" id="infocon" class="field">
+							<select id="infocon" class="field">
 								<option value="0">0</option>
 								<option value="1">1</option>
 								<option value="2">2</option>
@@ -189,7 +252,7 @@
 							</select>
 						</td>
 						<td>
-							<select name="hazcon" id="hazcon" class="field">
+							<select id="hazcon" class="field">
 								<option value="0">0</option>
 								<option value="1">1</option>
 								<option value="2">2</option>
@@ -217,40 +280,43 @@
 					</tr>
 					<tr id="string[0]" class="string" style="visibility: visible;">
 						<td>
-							<select name="site[0]" id="site[0]" class="field site">
+							<select id="site[0]" class="field site">
 							</select>
 						</td>
 						<td>
-							<select name="control_wsoc[0]" id="control_wsoc[0]" class="field control_wsoc">
+							<select id="control_wsoc[0]" class="field control_wsoc">
 							</select>
 						</td>
 						<td>
-							<select name="subsystem[0]" id="subsystem[0]" class="field subsystem">
+							<select id="subsystem[0]" class="field subsystem">
 							</select>
 						</td>
 						<td>
-							<input type="text" name="string_name[0]" id="string_name[0]" />
+							<input type="text" id="string_name[0]" />
 						</td>
 						<td>
-							<input type="text" name="antenna[0]" id="antenna[0]" />
+							<input type="text" id="antenna[0]" />
 						</td>
 						<td>
-							<select name="iron[0]" id="iron[0]" class="field iron">
+							<select id="iron[0]" class="field iron">
 							</select>
 						</td>
 						<td>
-							<select name="allocation[0]" id="allocation[0]" class="field">
+							<select id="allocation[0]" class="field">
 								<option value="0">PRIMARY</option>
 								<option value="1">ALTERNATE</option>
 							</select>
 						</td>
 						<td>
-							<select name="syscap[0]" id="syscap[0]" class="field">
+							<select id="syscap[0]" class="field">
 								<option value="0">GREEN</option>
 								<option value="1">AMBER</option>
 								<option value="2">RED</option>
 								<option value="3">WHITE</option>
 							</select>
+						</td>
+						<td>
+							<a href="#" id="delete[0]" class="delete">X</a>
 						</td>
 					</tr>
 				</table>
