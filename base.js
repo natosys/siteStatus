@@ -3,10 +3,10 @@
  * Change these files to match site and spacecraft alignment
  */
 //var _WSOCFILEPATH = "https://intelshare.intelink.gov/sites/53sigbn/Staff/S3/OPS/Shared%20Documents/siteStatus3/wsocs.txt";
-var _WSOCFILEPATH = "http://sitestatus3.try/wsocs.txt";
+var _WSOCFILEPATH = "http://sitestatus.try/wsocs.txt";
 //var _SPACECRAFTFILEPATH = "https://intelshare.intelink.gov/sites/53sigbn/Staff/S3/OPS/Shared%20Documents/siteStatus3/spacecraft.txt";
-var _SPACECRAFTFILEPATH = "http://sitestatus3.try/spacecraft.txt";
-var _SUBSYSTEMFILEPATH = "http://sitestatus3.try/subsystems.txt";
+var _SPACECRAFTFILEPATH = "http://sitestatus.try/spacecraft.txt";
+var _SUBSYSTEMFILEPATH = "http://sitestatus.try/subsystems.txt";
 let _WSOCS = readTextFile(_WSOCFILEPATH);
 let _SPACECRAFT = readTextFile(_SPACECRAFTFILEPATH);
 let _SUBSYSTEMS = readTextFile(_SUBSYSTEMFILEPATH);

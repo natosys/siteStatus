@@ -112,7 +112,7 @@
 						// Filter to WSOC GSCCE Strings
 						var gscceStrings = obj.equipment_configuration.filter(function (el) {
 						  return el.site == obj.site &&
-								 el.subsystem == "GSCCE";
+								 el.subsystem == "GSCCE" || el.subsystem == "RSCCE";
 						});
 						antCount += gscceStrings.length;
 					}
@@ -126,7 +126,7 @@
 						var obj = siteStatusReports[i];
 						var gscceStrings = obj.equipment_configuration.filter(function (el) {
 						  return el.site == obj.site &&
-								 el.subsystem == "GSCCE";
+								 el.subsystem == "GSCCE" || el.subsystem == "RSCCE";
 						});
 						var wsoc = _WSOCS.filter(function (el) {
 							return el.site == obj.site;
@@ -267,7 +267,7 @@
 					for (var i = 0; i < siteStatusReports.length; i++) {
 						var obj = siteStatusReports[i].equipment_configuration;
 						var obj = obj.filter(function (el) {
-							return el.subsystem == "GSCCE";
+							return el.subsystem == "GSCCE" || el.subsystem == "RSCCE";
 						})
 					
 						for (var k = 0; k < obj.length; k++) {
@@ -405,10 +405,7 @@ DOC
 Site:DOC, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:BOC1GMDU, Antenna:AODX1, Iron:1001, Allocation:1, SYSCAP:1
 Site:DOC, Control_WSOC:BOC, Subsystem:GSCCE, String_Name:BOC2GMDU, Antenna:BODX2, Iron:1003, Allocation:0, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:BOC3GMDU, Antenna:CODX3, Iron:1005, Allocation:1, SYSCAP:0
-Site:DOC, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:BOC4GMDU, Antenna:DODX4, Iron:1007, Allocation:0, SYSCAP:0
 Site:AOD, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:COS1MDU, Antenna:DADX1, Iron:1001, Allocation:1, SYSCAP:0
-Site:AOD, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:COS2MDU, Antenna:DBDX2, Iron:1002, Allocation:0, SYSCAP:0
-Site:AOD, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:COS3MDU, Antenna:DCDX3, Iron:1003, Allocation:1, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NCT-2, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NCT-1, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NCT-3, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
@@ -416,10 +413,7 @@ Site:DOC, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NCT-4, Antenna:FOCX4, I
 Site:AOD, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOD, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOD, Control_WSOC:DOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:DOC, Control_WSOC:DOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:BOCX1, Iron:1001, Allocation:0, SYSCAP:0
-Site:DOC, Control_WSOC:DOC, Subsystem:RSCCE, String_Name:BOC2RMDU, Antenna:BOCX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:DOC, Control_WSOC:DOC, Subsystem:RSCCE, String_Name:BOC3RMDU, Antenna:BOCX3, Iron:1001, Allocation:0, SYSCAP:0
-Site:DOC, Control_WSOC:DOC, Subsystem:RSCCE, String_Name:BOC4RMDU, Antenna:BOCX4, Iron:1001, Allocation:0, SYSCAP:0
+Site:DOC, Control_WSOC:DOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:BOCX1, Iron:1006, Allocation:0, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:WRMS, String_Name:BOC2WM, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:WRMS, String_Name:BOC3WM, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:DOC, Control_WSOC:DOC, Subsystem:WRMS, String_Name:BOC1WM, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
@@ -451,12 +445,7 @@ MOC
 0
 4.
 Site:MOC, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:BOC1GMDU, Antenna:AOMX1, Iron:1002, Allocation:1, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:BOC2GMDU, Antenna:BOMX2, Iron:1004, Allocation:0, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:BOC3GMDU, Antenna:COMX3, Iron:1006, Allocation:1, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:BOC4GMDU, Antenna:DOMX4, Iron:1008, Allocation:0, SYSCAP:0
 Site:AOM, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:COS1MDU, Antenna:MADX1, Iron:1004, Allocation:1, SYSCAP:0
-Site:AOM, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:COS2MDU, Antenna:MBDX2, Iron:1005, Allocation:1, SYSCAP:0
-Site:AOM, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:COS3MDU, Antenna:MCDX3, Iron:1006, Allocation:1, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NCT-2, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NCT-1, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NCT-3, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
@@ -464,10 +453,7 @@ Site:MOC, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NCT-4, Antenna:FOCX4, I
 Site:AOM, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOM, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOM, Control_WSOC:MOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:BOCX1, Iron:1001, Allocation:0, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC2RMDU, Antenna:BOCX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC3RMDU, Antenna:BOCX3, Iron:1001, Allocation:0, SYSCAP:0
-Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC4RMDU, Antenna:BOCX4, Iron:1001, Allocation:0, SYSCAP:0
+Site:MOC, Control_WSOC:MOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:MOMX1, Iron:1006, Allocation:1, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:WRMS, String_Name:BOC2WM, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:WRMS, String_Name:BOC3WM, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:MOC, Control_WSOC:MOC, Subsystem:WRMS, String_Name:BOC1WM, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
@@ -499,12 +485,7 @@ LOC
 0
 4.
 Site:LOC, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:BOC1GMDU, Antenna:AOLX1, Iron:1009, Allocation:0, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:BOC2GMDU, Antenna:BOLX2, Iron:1007, Allocation:1, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:BOC3GMDU, Antenna:COLX3, Iron:1005, Allocation:0, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:BOC4GMDU, Antenna:DOLX4, Iron:1003, Allocation:1, SYSCAP:0
 Site:AOL, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:COS1MDU, Antenna:LADX1, Iron:1007, Allocation:0, SYSCAP:0
-Site:AOL, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:COS2MDU, Antenna:LBDX2, Iron:1008, Allocation:1, SYSCAP:0
-Site:AOL, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:COS3MDU, Antenna:LCDX3, Iron:1009, Allocation:0, SYSCAP:0
 Site:AOL, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NCT-2, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:LOC, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NCT-1, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:LOC, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NCT-3, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
@@ -512,10 +493,6 @@ Site:LOC, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NCT-4, Antenna:FOCX4, I
 Site:AOL, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOL, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOL, Control_WSOC:LOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:BOCX1, Iron:1001, Allocation:0, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:RSCCE, String_Name:BOC2RMDU, Antenna:BOCX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:RSCCE, String_Name:BOC3RMDU, Antenna:BOCX3, Iron:1001, Allocation:0, SYSCAP:0
-Site:LOC, Control_WSOC:LOC, Subsystem:RSCCE, String_Name:BOC4RMDU, Antenna:BOCX4, Iron:1001, Allocation:0, SYSCAP:0
 Site:LOC, Control_WSOC:LOC, Subsystem:WRMS, String_Name:BOC2WM, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:LOC, Control_WSOC:LOC, Subsystem:WRMS, String_Name:BOC3WM, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:LOC, Control_WSOC:LOC, Subsystem:WRMS, String_Name:BOC1WM, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
@@ -547,12 +524,7 @@ WOC
 0
 4.
 Site:WOC, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:BOC1GMDU, Antenna:AOWX1, Iron:1008, Allocation:0, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:BOC2GMDU, Antenna:BOWX2, Iron:1006, Allocation:1, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:BOC3GMDU, Antenna:COWX3, Iron:1004, Allocation:0, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:BOC4GMDU, Antenna:DOWX4, Iron:1002, Allocation:1, SYSCAP:0
 Site:AOW, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:COS1MDU, Antenna:WADX1, Iron:1001, Allocation:0, SYSCAP:0
-Site:BOW, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:COS2MDU, Antenna:WBDX2, Iron:1003, Allocation:0, SYSCAP:0
-Site:AOW, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:COS3MDU, Antenna:WCDX3, Iron:1005, Allocation:0, SYSCAP:0
 Site:WOC, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NCT-2, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:WOC, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NCT-1, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:WOC, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NCT-3, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
@@ -560,10 +532,6 @@ Site:WOC, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NCT-4, Antenna:FOCX4, I
 Site:AOW, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:BOW, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOW, Control_WSOC:WOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:BOCX1, Iron:1001, Allocation:0, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:RSCCE, String_Name:BOC2RMDU, Antenna:BOCX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:RSCCE, String_Name:BOC3RMDU, Antenna:BOCX3, Iron:1001, Allocation:0, SYSCAP:0
-Site:WOC, Control_WSOC:WOC, Subsystem:RSCCE, String_Name:BOC4RMDU, Antenna:BOCX4, Iron:1001, Allocation:0, SYSCAP:0
 Site:WOC, Control_WSOC:WOC, Subsystem:WRMS, String_Name:BOC2WM, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:WOC, Control_WSOC:WOC, Subsystem:WRMS, String_Name:BOC3WM, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:WOC, Control_WSOC:WOC, Subsystem:WRMS, String_Name:BOC1WM, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
@@ -595,12 +563,7 @@ BOC
 0
 4.
 Site:BOC, Control_WSOC:DOC, Subsystem:GSCCE, String_Name:BOC1GMDU, Antenna:AOBX1, Iron:1001, Allocation:1, SYSCAP:0
-Site:BOC, Control_WSOC:MOC, Subsystem:GSCCE, String_Name:BOC2GMDU, Antenna:BOBX2, Iron:1005, Allocation:0, SYSCAP:0
-Site:BOC, Control_WSOC:LOC, Subsystem:GSCCE, String_Name:BOC3GMDU, Antenna:COBX3, Iron:1007, Allocation:0, SYSCAP:0
-Site:BOC, Control_WSOC:WOC, Subsystem:GSCCE, String_Name:BOC4GMDU, Antenna:DOBX4, Iron:1009, Allocation:1, SYSCAP:0
 Site:AOB, Control_WSOC:BOC, Subsystem:GSCCE, String_Name:COS1MDU, Antenna:BADX1, Iron:1007, Allocation:1, SYSCAP:0
-Site:AOB, Control_WSOC:BOC, Subsystem:GSCCE, String_Name:COS2MDU, Antenna:BBDX2, Iron:1009, Allocation:1, SYSCAP:0
-Site:AOB, Control_WSOC:BOC, Subsystem:GSCCE, String_Name:COS3MDU, Antenna:BCDX3, Iron:1002, Allocation:1, SYSCAP:0
 Site:BOC, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NCT-2, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:BOC, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NCT-1, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:BOC, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NCT-3, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
@@ -608,10 +571,6 @@ Site:BOC, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NCT-4, Antenna:FOCX4, I
 Site:AOB, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOB, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX1, Iron:1001, Allocation:0, SYSCAP:0
 Site:AOB, Control_WSOC:BOC, Subsystem:RFMOW, String_Name:NA, Antenna:COSX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:BOC, Control_WSOC:BOC, Subsystem:RSCCE, String_Name:BOC1RMDU, Antenna:BOCX1, Iron:1001, Allocation:0, SYSCAP:0
-Site:BOC, Control_WSOC:BOC, Subsystem:RSCCE, String_Name:BOC2RMDU, Antenna:BOCX2, Iron:1001, Allocation:0, SYSCAP:0
-Site:BOC, Control_WSOC:BOC, Subsystem:RSCCE, String_Name:BOC3RMDU, Antenna:BOCX3, Iron:1001, Allocation:0, SYSCAP:0
-Site:BOC, Control_WSOC:BOC, Subsystem:RSCCE, String_Name:BOC4RMDU, Antenna:BOCX4, Iron:1001, Allocation:0, SYSCAP:0
 Site:BOC, Control_WSOC:BOC, Subsystem:WRMS, String_Name:BOC2WM, Antenna:FOCX2, Iron:1001, Allocation:0, SYSCAP:0
 Site:BOC, Control_WSOC:BOC, Subsystem:WRMS, String_Name:BOC3WM, Antenna:FOCX3, Iron:1001, Allocation:0, SYSCAP:0
 Site:BOC, Control_WSOC:BOC, Subsystem:WRMS, String_Name:BOC1WM, Antenna:FOCX1, Iron:1001, Allocation:0, SYSCAP:0
